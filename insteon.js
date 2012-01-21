@@ -56,7 +56,7 @@ function getInsteonMessageLength(aByte) {
     return -1; // not implemented
 }
 
-exports.insteonParser = function insteonParser() {
+exports.parser = function insteonParser() {
     // collect incoming bytes and return a complete insteon message(s) http://www.insteon.net/sdk/forum/topic.asp?TOPIC_ID=927
     var data = [];
     var messages = [];
