@@ -1,0 +1,13 @@
+{   
+	"name" : "insteon",
+    "version" : "0.0.1",
+    "description" : "Implements a parser for an INSTON Power Line Modem (PLM) to build your own controller",
+    "author" : "Graeme Canivet <graeme.canivet@gmail.com>",
+    "main" : "./insteon",
+	"keywords" : ["insteon", "serialport", "automation", "control"],
+	"homepage" : "https://github.com/gcanivet/node-insteon",
+    "repository" : {
+        "type" : "git",
+        "url" : "git://github.com/gcanivet/node-insteon.git"
+    }
+}
