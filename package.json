@@ -9,5 +9,8 @@
     "repository" : {
         "type" : "git",
         "url" : "git://github.com/gcanivet/node-insteon.git"
-    }
+    },
+	"dependencies" : {
+		"serialport" : "*"
+	}
 }
