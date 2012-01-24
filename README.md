@@ -6,8 +6,8 @@ Implements a parser for an INSTEON Power Line Modem (PLM) to build your own cont
 Install
 -------
 
-npm install serialport
-npm install insteon
+	npm install serialport
+	npm install insteon
 
 How to Use
 ----------
