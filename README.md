@@ -29,4 +29,7 @@ Sample code:
 		console.log(data);
 	});
 
+	var getversion = new Buffer([0x02, 0x60]);
+	sp.write(buf);
+	
 
