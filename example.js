@@ -1,4 +1,4 @@
-var insteon = require('insteon');
+var insteon = require('./insteon');
 var SerialPort = require('serialport').SerialPort;
 var sp = new SerialPort('/dev/ttyS0', {
     baudrate: 19200,
@@ -12,3 +12,7 @@ var sp = new SerialPort('/dev/ttyS0', {
 sp.on('data', function(data) {
     console.log(data);
 });
+
+var getversion = new Buffer([0x02, 0x60]);
+sp.write(getversion);
+

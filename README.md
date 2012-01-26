@@ -30,6 +30,6 @@ Sample code:
 	});
 
 	var getversion = new Buffer([0x02, 0x60]);
-	sp.write(buf);
+	sp.write(getversion);
 	
 
