@@ -16,7 +16,7 @@ var INSTEON_MESSAGES = {
     '58' : {type: 'ALL-Link Cleanup Status Report', len: 3},
     // response from commands sent from Host to IM
     '60' : {type: 'Get IM Info', len: 9}, //
-    '61' : {type: 'Send ALL-Link Command', len: 9},
+    '61' : {type: 'Send ALL-Link Command', len: 6},
     '62' : {type: 'Send INSTEON Standard or Extended Message'}, // no defined length [must check message flag]
     '63' : {type: 'Send X10', len: 5},
     '64' : {type: 'Start ALL-Linking', len: 5},
