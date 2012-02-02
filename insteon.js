@@ -5,8 +5,8 @@ var INSTEON_PLM_TIME_LIMIT = 240; 	// insteonParser(); all messages must complet
 
 var INSTEON_MESSAGES = {
     // commands sent from an IM to Host
-    '50' : {type: 'Insteon Standard Message Received', len: 11},
-    '51' : {type: 'Insteon Extended Message Received', len: 25},
+    '50' : {type: 'INSTEON Standard Message Received', len: 11},
+    '51' : {type: 'INSTEON Extended Message Received', len: 25},
     '52' : {type: 'X10 Received', len: 4},
     '53' : {type: 'ALL-Linking Completed', len: 10},
     '54' : {type: 'Button Event Report', len: 3},
