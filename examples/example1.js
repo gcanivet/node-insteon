@@ -1,4 +1,8 @@
-var insteon = require('./insteon');
+/*
+** Example 1: Raw Serialport Insteon Parser
+*/
+
+var insteon = require('.././insteon');
 var SerialPort = require('serialport').SerialPort;
 var sp = new SerialPort('/dev/ttyS0', {
     baudrate: 19200,
