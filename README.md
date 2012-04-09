@@ -1,7 +1,15 @@
 Insteon Parser
 ==============
 
-Implements a parser for an INSTEON Power Line Modem (PLM) to build your own controller. 
+A node based INSTEON controller for sending and receiving INSTEON commands including a standalone parser for an INSTEON Power Line Modem (PLM) to build your own controller.
+
+Features
+--------
+	* implements PLM request/response model
+	* message queue
+	* retry mechanism
+	* reconnect mechanism
+
 
 Install
 -------
