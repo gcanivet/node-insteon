@@ -307,7 +307,7 @@ var insteonJS = exports.insteonJS = function insteonJS(byteArray) {
             break;
         default:
             data['error'] = 'Unrecognized command or command not implemented';
-            if(byteArray[0] == INSTEON_PLM_NAK) data['error'] = 'PLM NAK received (buffer overrun)';
+            if(byteArray[0] == config.INSTEON_PLM_NAK) data['error'] = 'PLM NAK received (buffer overrun)';
             break;
     }
     return data;
