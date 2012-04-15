@@ -37,9 +37,16 @@ exports.connect = function connect(port) {
         flowcontrol: 0,
         parser: parser()
     });
-    console.log('connect::serial port connected');
-    config.sp.on('data', receive.handler);
-    config.expired_count = 0;
+	/*
+	sp.on('end', function() {});
+	sp.on('close', function() {});
+	sp.on('error', function() {});
+	*/
+    sp.once('data', function(data) {
+		console.log('connect::serial port connected');
+    	config.sp.on('data', receive.handler);
+    	config.expired_count = 0;
+	});
 
 	var getversion = [0x02, 0x60];
     send.sendSerial(getversion);
