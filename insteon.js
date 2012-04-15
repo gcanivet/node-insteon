@@ -19,6 +19,7 @@ var parser = exports.parser = require('./parser.js').parser; // v.0.0.3 compatib
 exports.send = send.send;
 exports.sendSerial = send.sendSerial;
 exports.eventEmitter = config.eventEmitter;
+exports.setMessageFlags = utils.setMessageFlags;
 
 exports.connect = function connect(port) {
     if(config.sp != null) {
