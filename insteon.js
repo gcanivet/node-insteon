@@ -49,4 +49,4 @@ exports.connect = function connect(port) {
 */
 setInterval(send.dequeue, 250); // always check for queued commands (by default, send() dequeues immediately)
 config.eventEmitter.on('cleanup', receive.cleanup);
-//receive.eventEmitter.on('message', someEvent);
+//config.eventEmitter.on('message', someEvent);
