@@ -196,9 +196,9 @@ var getInsteonTimer = exports.getInsteonTimer = function getInsteonTimer(extende
     times[1][1][1] = 317;
     times[1][1][2] = 475;
     times[1][1][3] = 634;
-    if(active_timers == undefined) active_timers = 0;
+    if(config.active_timers == undefined) config.active_timers = 0;
     if(times[extended][ack][max_hops] != undefined) {
-        return times[extended][ack][max_hops] + 240*2 + Math.min(1400*active_timers, 2800);
+        return times[extended][ack][max_hops] + 240*2 + Math.min(1400*config.active_timers, 2800);
         // heuristic: 240ms request to PLM, time on network above, 240ms response from PLM, plus add 1.4s allowance for each item in the queue due to higher likelihood of buffer overruns and reconnects (trial-and-error).
     }
     return 240*2 + 634;  // no time found, default max
@@ -307,7 +307,7 @@ var insteonJS = exports.insteonJS = function insteonJS(byteArray) {
             break;
         default:
             data['error'] = 'Unrecognized command or command not implemented';
-            if(byteArray[0] == INSTEON_PLM_NAK) data['error'] = 'PLM NAK received (buffer overrun)';
+            if(byteArray[0] == config.INSTEON_PLM_NAK) data['error'] = 'PLM NAK received (buffer overrun)';
             break;
     }
     return data;

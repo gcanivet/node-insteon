@@ -19,8 +19,10 @@ var parser = exports.parser = require('./parser.js').parser; // v.0.0.3 compatib
 exports.send = send.send;
 exports.sendSerial = send.sendSerial;
 exports.eventEmitter = config.eventEmitter;
+exports.setMessageFlags = utils.setMessageFlags;
 
 exports.connect = function connect(port) {
+	// re-connect
     if(config.sp != null) {
         config.sp.close();
         config.sp.removeAllListeners();
@@ -36,12 +38,22 @@ exports.connect = function connect(port) {
         flowcontrol: 0,
         parser: parser()
     });
-    console.log('connect::serial port connected');
-    config.sp.on('data', receive.handler);
-    config.expired_count = 0;
-
-	var getversion = [0x02, 0x60];
-    send.sendSerial(getversion);
+	/*
+	config.sp.on('end', function() {});
+	config.sp.on('close', function() {});
+	config.sp.on('error', function() {});
+	*/
+	config.PLM_BUSY = true; // queue messages until connection confirmed
+    config.sp.once('data', function(data) {
+	    console.log('connect::read serial hex: '+utils.byteArrayToHexStringArray(data));
+    	console.log('connect::serial port connected');
+		config.sp.on('data', receive.handler);
+		config.PLM_BUSY = false;
+    	config.expired_count = 0;
+	});
+	// verify connection
+	var getversion = [0x02, 0x60]; // get IM info
+    send.sendSerial(getversion); // or sendSerial
 }
 
 /*
@@ -49,4 +61,4 @@ exports.connect = function connect(port) {
 */
 setInterval(send.dequeue, 250); // always check for queued commands (by default, send() dequeues immediately)
 config.eventEmitter.on('cleanup', receive.cleanup);
-//receive.eventEmitter.on('message', someEvent);
+//config.eventEmitter.on('message', someEvent);

@@ -168,9 +168,9 @@ var timer = exports.timer = function(trans_queue_item, messageid) {
         console.log('timer::messsage ('+trans_queue_item.id+') state updated to EXPIRED');
         receive.cleanup(); // run immediately instead of evented; instead of waiting for next cleanup then next dequeue event, creating a delay
         // recconnect check
-        expired_count++;
-        if(expired_count > expired_count_reconnect) {
-            console.log('timer::consecutive expired messages exceeds '+expired_count_reconnect+', attempting reconnect');
+        config.expired_count++;
+        if(config.expired_count > config.expired_count_reconnect) {
+            console.log('timer::consecutive expired messages exceeds '+config.expired_count_reconnect+', attempting reconnect');
             insteon.connect();
         }
         // retry expired messages, add to back of queue (not front, based on heuristics)
