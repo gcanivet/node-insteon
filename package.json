@@ -1,7 +1,7 @@
 {   
 	"name" : "insteon",
-    "version" : "0.0.3",
-    "description" : "Implements a parser for an INSTON Power Line Modem (PLM) to build your own controller",
+    "version" : "0.1.0",
+    "description" : "An INSTEON controller plus serial command parser for an INSTON Power Line Modem (PLM)",
     "author" : "Graeme Canivet <graeme.canivet@gmail.com>",
     "main" : "./insteon",
 	"keywords" : ["insteon", "serialport", "automation", "control"],

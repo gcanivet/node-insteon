@@ -22,6 +22,7 @@ exports.eventEmitter = config.eventEmitter;
 exports.setMessageFlags = utils.setMessageFlags;
 
 exports.connect = function connect(port) {
+	// re-connect
     if(config.sp != null) {
         config.sp.close();
         config.sp.removeAllListeners();
@@ -38,18 +39,21 @@ exports.connect = function connect(port) {
         parser: parser()
     });
 	/*
-	sp.on('end', function() {});
-	sp.on('close', function() {});
-	sp.on('error', function() {});
+	config.sp.on('end', function() {});
+	config.sp.on('close', function() {});
+	config.sp.on('error', function() {});
 	*/
-    sp.once('data', function(data) {
-		console.log('connect::serial port connected');
-    	config.sp.on('data', receive.handler);
+	config.PLM_BUSY = true; // queue messages until connection confirmed
+    config.sp.once('data', function(data) {
+	    console.log('connect::read serial hex: '+utils.byteArrayToHexStringArray(data));
+    	console.log('connect::serial port connected');
+		config.sp.on('data', receive.handler);
+		config.PLM_BUSY = false;
     	config.expired_count = 0;
 	});
-
-	var getversion = [0x02, 0x60];
-    send.sendSerial(getversion);
+	// verify connection
+	var getversion = [0x02, 0x60]; // get IM info
+    send.sendSerial(getversion); // or sendSerial
 }
 
 /*

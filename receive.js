@@ -15,7 +15,7 @@ var handler = exports.handler = function handler(data) {
     console.log('handler::read serial hex: '+utils.byteArrayToHexStringArray(data));
 
     var insteonMsg = utils.insteonJS(data);
-    console.log('handler::insteon message:');
+    console.log('handler::incoming insteon message:');
     console.log(insteonMsg);
 
     processMsg(insteonMsg);
