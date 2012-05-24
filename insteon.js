@@ -17,7 +17,7 @@ var SerialPort = require('serialport').SerialPort;
 */
 var parser = exports.parser = require('./parser.js').parser; // v.0.0.3 compatibility
 exports.send = send.send;
-exports.sendSerial = send.sendSerial;
+exports.sendRawSerial = send.sendRawSerial;
 exports.eventEmitter = config.eventEmitter;
 exports.setMessageFlags = utils.setMessageFlags;
 
@@ -26,6 +26,7 @@ exports.connect = function connect(port) {
     if(config.sp != null) {
         config.sp.close();
         config.sp.removeAllListeners();
+		config.sp = null;
     }
     console.log('connect::opening serialport');
 	if(port == undefined) port = '/dev/ttyS0';
@@ -47,13 +48,20 @@ exports.connect = function connect(port) {
     config.sp.once('data', function(data) {
 	    console.log('connect::read serial hex: '+utils.byteArrayToHexStringArray(data));
     	console.log('connect::serial port connected');
-		config.sp.on('data', receive.handler);
+		config.sp.on('data', receive.serialport_handler);
 		config.PLM_BUSY = false;
     	config.expired_count = 0;
 	});
+
 	// verify connection
-	var getversion = [0x02, 0x60]; // get IM info
-    send.sendSerial(getversion); // or sendSerial
+	var timerid = null;
+	var verify = function() {
+		if(!config.PLM_BUSY) clearInterval(timerid);
+		console.log('connect::verify connection with getversion');
+		var getversion = [0x02, 0x60]; // get IM info
+    	send.sendRawSerial(getversion);
+	}
+	timerid = setInterval(verify, 1000);
 }
 
 /*

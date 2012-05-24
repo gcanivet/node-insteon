@@ -8,12 +8,12 @@ var insteon = require('./insteon.js');
 var trans_queue = config.trans_queue;
 
 /*
-** sendSerial: send a serial command, bypassing transaction queue
+** sendRaSerial: send a serial command, bypassing transaction queue
 */
-var sendSerial = exports.sendSerial = function sendSerial(data) {
-    //console.log('write serial dec: '+data);
-    console.log('write serial hex: '+utils.byteArrayToHexStringArray(data));
-    //io.sockets.send('write serial hex: '+utils.byteArrayToHexStringArray(data));
+var sendRawSerial = exports.sendRawSerial = function sendRawSerial(data) {
+    //console.log('sendRawSerial::write serial dec: '+data);
+    console.log('sendRawSerial::write serial hex: '+utils.byteArrayToHexStringArray(data));
+    //io.sockets.send('sendRawSerial::write serial hex: '+utils.byteArrayToHexStringArray(data));
     var buf = new Buffer(data);
     config.sp.write(buf);
 };
@@ -56,7 +56,7 @@ var send = exports.send = function send(data, retry) {
         item.timer = utils.getPlmTimer(cmd);
     }
     trans_queue.unshift(item);
-    console.log('send::added message ('+item.id+') ('+utils.byteArrayToHexStringArray(data)+') (retries_left:'+item.retries_left+') to front of queue (length:'+trans_queue.length+')');
+    console.log('send::added message ('+item.id+') hex ('+utils.byteArrayToHexStringArray(data)+') (retries_left:'+item.retries_left+') to queue (length:'+trans_queue.length+')');
     dequeue(); // run immediately instead of evented; command on the wire sooner, for the most common case
 };
 
@@ -71,7 +71,7 @@ var dequeue = exports.dequeue = function dequeue() {
             // send messages immediately (no waiting)
             for(var i = trans_queue.length-1; i >= 0; i--) {
                 if(trans_queue[i].state == 'QUEUED') {
-                    sendSerial(trans_queue[i].request);
+                    sendRawSerial(trans_queue[i].request);
                     trans_queue[i].state = 'SENT';
                     (function(item) {
                         config.active_timers++;
@@ -85,7 +85,7 @@ var dequeue = exports.dequeue = function dequeue() {
             if(trans_queue.length > 0) {
                 var item = trans_queue[trans_queue.length-1];
                 if(item.state == 'QUEUED') {
-                    sendSerial(item.request);
+                    sendRawSerial(item.request);
                     item.state = 'SENT';
                     (function(item) {
                         config.active_timers++;
@@ -99,7 +99,7 @@ var dequeue = exports.dequeue = function dequeue() {
                 if(trans_queue[i].type == 'PLM') {
                     // send all PLM
                     if(trans_queue[i].state == 'QUEUED') {
-                        sendSerial(trans_queue[i].request);
+                        sendRawSerial(trans_queue[i].request);
                         trans_queue[i].state = 'SENT';
                         (function(item) {
                             config.active_timers++;
@@ -110,7 +110,7 @@ var dequeue = exports.dequeue = function dequeue() {
                     // send last network message if and only if queued
                     var last_network_msg = trans_queue[i];
                     if(last_network_msg.state == 'QUEUED') {
-                        sendSerial(last_network_msg.request);
+                        sendRawSerial(last_network_msg.request);
                         last_network_msg.state = 'SENT';
                         (function(item) {
                             config.active_timers++;
@@ -126,7 +126,7 @@ var dequeue = exports.dequeue = function dequeue() {
                 if(trans_queue[i].type == 'PLM') {
                     // send all PLM
                     if(trans_queue[i].state == 'QUEUED') {
-                        sendSerial(trans_queue[i].request);
+                        sendRawSerial(trans_queue[i].request);
                         trans_queue[i].state = 'SENT';
                         (function(item) {
                             config.active_timers++;
@@ -139,7 +139,7 @@ var dequeue = exports.dequeue = function dequeue() {
                     if(trans_queue[i].state != 'QUEUED') busy_devices[to] = true;
                     if(trans_queue[i].state == 'QUEUED' && (busy_devices[to] == false || busy_devices[to] == undefined)) {
                         console.log('dequeue::releasing message ('+trans_queue[i].id+'), check back in '+trans_queue[i].timer+'ms');
-                        sendSerial(trans_queue[i].request);
+                        sendRawSerial(trans_queue[i].request);
                         trans_queue[i].state = 'SENT';
                         (function(item) {
                             config.active_timers++;

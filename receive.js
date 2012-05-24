@@ -11,11 +11,11 @@ var trans_queue = config.trans_queue;
 /*
 ** handler: registered event handler for any data from serialport
 */
-var handler = exports.handler = function handler(data) {
-    console.log('handler::read serial hex: '+utils.byteArrayToHexStringArray(data));
+var serialport_handler = exports.serialport_handler = function serialport_handler(data) {
+    console.log('serialport_handler::read serial hex: '+utils.byteArrayToHexStringArray(data));
 
     var insteonMsg = utils.insteonJS(data);
-    console.log('handler::incoming insteon message:');
+    console.log('serialport_handler::incoming insteon message:');
     console.log(insteonMsg);
 
     processMsg(insteonMsg);
