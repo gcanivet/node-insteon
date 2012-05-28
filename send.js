@@ -41,8 +41,15 @@ var send = exports.send = function send(data, retry) {
         state: 'QUEUED',
         retries_left: retry,
         cmd: cmd,
-        timer: config.INSTEON_PLM_TRANS_TIME_LIMIT
+        timer: config.INSTEON_PLM_TRANS_TIME_LIMIT,
     };
+    Object.defineProperty(item, 'timerid', {
+        value:null,
+        writable:true,
+        configurable:true,
+        enumerable:false // timerid does not jsonify
+    });
+
     if(cmd == config.INSTEON_SEND_STANDARD_OR_EXTENDED) {
         item.type = 'INSTEON';
         item.to_address = utils.dec2hexstr(data[2]) + utils.dec2hexstr(data[3]) + utils.dec2hexstr(data[4]);
