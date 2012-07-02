@@ -67,6 +67,6 @@ exports.connect = function connect(port) {
 /*
 ** Built-in Events and Event Handlers
 */
-setInterval(send.dequeue, 250); // always check for queued commands (by default, send() dequeues immediately)
+setInterval(send.dequeue, 250); // always check for queued commands (by default, send() will dequeue immediately)
 config.eventEmitter.on('cleanup', receive.cleanup);
 //config.eventEmitter.on('message', someEvent);
