@@ -3,7 +3,6 @@
 */
 var events = require('events');
 
-
 // insteon constants
 exports.INSTEON_PLM_START = 0x02;
 exports.INSTEON_PLM_ACK = 0x06;

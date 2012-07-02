@@ -22,7 +22,7 @@ var sendRawSerial = exports.sendRawSerial = function sendRawSerial(data) {
 ** send: adds a serial command to the transaction queue
 */
 var send = exports.send = function send(data, retry) {
-    // pre: data is a byte array
+    // pre: data is a byte array (ie. [0x02, 0x05])
     // adds message to back of queue
     if(data.length < 2) throw 'send::not a valid PLM message ('+data+'), must be greater than eq 2 bytes';
     if(data[1] < 0x60 || data[1] > 0x73) throw 'send::not a valid PLM message ('+data+'), command must be between 0x60 and 0x73';
@@ -41,7 +41,7 @@ var send = exports.send = function send(data, retry) {
         state: 'QUEUED',
         retries_left: retry,
         cmd: cmd,
-        timer: config.INSTEON_PLM_TRANS_TIME_LIMIT,
+        timer: config.INSTEON_PLM_TRANS_TIME_LIMIT
     };
     Object.defineProperty(item, 'timerid', {
         value:null,
@@ -64,11 +64,11 @@ var send = exports.send = function send(data, retry) {
     }
     trans_queue.unshift(item);
     console.log('send::added message ('+item.id+') hex ('+utils.byteArrayToHexStringArray(data)+') (retries_left:'+item.retries_left+') to queue (length:'+trans_queue.length+')');
-    dequeue(); // run immediately instead of evented; command on the wire sooner, for the most common case
+    dequeue(); // run immediately instead of evented; puts command on the wire sooner for the most common case
 };
 
 /*
-** dequeue: execute next appopropriate serial command(s) from the queue; not always FIFO; does not actually remove it, cleanup() does that later
+** dequeue: execute next appopropriate serial command(s) from the queue; not always FIFO; does not actually remove it (should be renamed) since cleanup() does that later
 */
 var dequeue = exports.dequeue = function dequeue() {
 	if(config.PLM_BUSY) return;
@@ -114,7 +114,7 @@ var dequeue = exports.dequeue = function dequeue() {
                         })(trans_queue[i]);
                     }
                 } else {
-                    // send last network message if and only if queued
+                    // send the last network message if and only if queued (ready)
                     var last_network_msg = trans_queue[i];
                     if(last_network_msg.state == 'QUEUED') {
                         sendRawSerial(last_network_msg.request);
@@ -128,7 +128,7 @@ var dequeue = exports.dequeue = function dequeue() {
             }
             break;
         case 'queue_device_msgs':
-            var busy_devices = {}; // key-value pairs
+            var busy_devices = {}; // rebuild each time
             for(var i = trans_queue.length-1; i >= 0; i--) {
                 if(trans_queue[i].type == 'PLM') {
                     // send all PLM
@@ -150,7 +150,7 @@ var dequeue = exports.dequeue = function dequeue() {
                         trans_queue[i].state = 'SENT';
                         (function(item) {
                             config.active_timers++;
-                             item.timerid = setTimeout(function(){timer(item);}, item.timer); // like passing by value; new scope so item is not changed by parent scope
+							item.timerid = setTimeout(function(){timer(item);}, item.timer); // like passing by value; new scope so item is not changed by parent scope
                         })(trans_queue[i]);
                         busy_devices[to] = true;
                     }
