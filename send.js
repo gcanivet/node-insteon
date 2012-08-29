@@ -54,7 +54,7 @@ var send = exports.send = function send(data, retry) {
         item.type = 'INSTEON';
         item.to_address = utils.dec2hexstr(data[2]) + utils.dec2hexstr(data[3]) + utils.dec2hexstr(data[4]);
         var message_flags = utils.getMessageFlags(data[5]);
-        item.timer = utils.getInsteonTimer(message_flags.extended, message_flags.max_hops, 1);
+        item.timer = utils.getInsteonTimer(message_flags.extended, 1, message_flags.max_hops); // ack = 1
         // todo - determine if message has ack or nak response to improve timer, for now assume ack (true) in last parameter
     } else if(cmd == config.INSTEON_SEND_X10) {
         item.type = 'X10';
