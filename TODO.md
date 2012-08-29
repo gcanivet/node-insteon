@@ -6,6 +6,7 @@ Development
 	* discover devices (iterate PLM)
 	* create device classes, support for all commands
 	* implement full insteon protocol
+	* connect() port, not honoured in send.js and receive.js  
 
 Code Maintenance
 ----------------
