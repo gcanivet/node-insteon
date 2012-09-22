@@ -29,6 +29,7 @@ exports.connect = function connect(port) {
 		config.sp = null;
     }
     console.log('connect::opening serialport');
+	//if(port == undefined) port = '/dev/tty.usbserial-A8006Xpl';
 	if(port == undefined) port = '/dev/ttyS0';
 
     config.sp = new SerialPort(port, {
