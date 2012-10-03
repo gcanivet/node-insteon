@@ -15,7 +15,6 @@ Install
 -------
 	npm install serialport
 	npm install insteon
-	npm install clone (optional: example2.js)
 
 How to Use
 ----------
@@ -29,7 +28,7 @@ Connection Tips
 ---------------
 This has been tested with the following environments and devices:
 
-PowerLinc Serial Dual Band Modem (#2413S) connected to Ubuntu 14.0 via Windows 7 host VMWare Player. 
+PowerLinc Serial Dual Band Modem (#2413S) connected to Ubuntu 11.10 via Windows 7 host VMWare Player. 
 * As long as the VM recognizes the host serial port, you should be able to connect using port "/dev/ttyS0"
 	
 PowerLinc Portable USB (#2448A7) connected to MacBook Air OSX 10.7.4. 
@@ -43,7 +42,7 @@ PowerLinc USB Modem (#2412U) connected to Ubuntu 11.10 via Windows 7 host VMWare
 	http://www.ftdichip.com/Drivers/VCP.htm
 * Once installed, and the VM recognized the host USB port, you should be able to connect using port "/dev/USBS0"
 
-Note, others reported needing to comment out "parity" and "flowcontrol" for it to work (#2413U). 
+Note, others reported needing to comment out "parity" and "flowcontrol" for theirs to work (#2413U). 
 
 License
 -------
