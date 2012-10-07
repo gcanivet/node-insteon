@@ -15,7 +15,7 @@ var SerialPort = require('serialport').SerialPort;
 /*
 ** Exported Interface 
 */
-var parser = exports.parser = require('./parser.js').parser; // v.0.0.3 compatibility
+var parser = exports.parser = require('./parser.js').parser; // for v.0.0.3 compatibility
 exports.send = send.send;
 exports.sendRawSerial = send.sendRawSerial;
 exports.eventEmitter = config.eventEmitter;
@@ -28,11 +28,12 @@ exports.connect = function connect(port) {
         config.sp.removeAllListeners();
 		config.sp = null;
     }
-    console.log('connect::opening serialport');
-	//if(port == undefined) port = '/dev/tty.usbserial-A8006Xpl';
+	
+	if(config.port != undefined) port = config.port;
 	if(port == undefined) port = '/dev/ttyS0';
-
-    config.sp = new SerialPort(port, {
+	console.log('connect::opening serialport ' + port);
+	
+	config.sp = new SerialPort(port, {
         baudrate: 19200,
         databits: 8,
         stopbits: 1,
@@ -40,13 +41,17 @@ exports.connect = function connect(port) {
         flowcontrol: 0,
         parser: parser()
     });
-	/*
-	config.sp.on('end', function() {});
-	config.sp.on('close', function() {});
-	config.sp.on('error', function() {});
-	*/
-	config.PLM_BUSY = true; // queue messages until connection confirmed
-    config.sp.once('data', function(data) {
+	
+	config.port = port; // for reconnects 
+
+	// debug	
+	config.sp.on('end', function() { console.log('connect: serial end'); });
+	config.sp.on('close', function() { console.log('connect: serial close'); });
+	config.sp.on('error', function() { console.log('connect: serial error'); });
+    
+	// queue all messages until serial connection confirmed
+	config.PLM_BUSY = true;
+	config.sp.once('data', function(data) {
 	    console.log('connect::read serial hex: '+utils.byteArrayToHexStringArray(data));
     	console.log('connect::serial port connected');
 		config.sp.on('data', receive.serialport_handler);
@@ -54,7 +59,7 @@ exports.connect = function connect(port) {
     	config.expired_count = 0;
 	});
 
-	// verify connection
+	// send command to verify connection
 	var timerid = null;
 	var verify = function() {
 		if(!config.PLM_BUSY) clearInterval(timerid);

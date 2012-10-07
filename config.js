@@ -16,7 +16,8 @@ exports.INSTEON_RECV_EXTENDED = 0x51;
 exports.INSTEON_RECV_X10 = 0x52;
 
 // system settings and state
-exports.sp = null;								// serialport
+exports.sp = null;								// serialport connection
+exports.port = undefined;						// serialport
 exports.eventEmitter = new events.EventEmitter();
 exports.INSTEON_QUEUE_LIMIT = 100;				// max allowed messages in queue
 exports.INSTEON_PLM_TRANS_TIME_LIMIT = 1000;    // default transaction time limit

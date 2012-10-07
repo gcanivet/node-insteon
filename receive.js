@@ -87,11 +87,11 @@ var processMsg = exports.processMsg = function processMsg(insteonMsg) {
 };
 
 /*
-** match: checking incoming message against the queue and update state accordingly
+** match: check incoming message against the queue and update state accordingly
 */
 var match = exports.match = function match(insteonMsg) {
     for(var i = trans_queue.length - 1; i >= 0; i--) {
-        // INSTEON response - match inbound fromdeviceid to last PLM_ACK'd todeviceid; dequeue() ensures only 1 outbound msg to a given device at a time so this is safe
+        // INSTEON response - match inbound fromdeviceid to last PLM_ACK'd todeviceid; dequeue() promises only 1 outbound msg to a given deviceid at a time so this is safe
         if((insteonMsg.cmd == config.INSTEON_RECV_STANDARD || insteonMsg.cmd == config.INSTEON_RECV_EXTENDED)
           && trans_queue[i].type == 'INSTEON' && trans_queue[i].state == 'PLM_ACK') {
             var flags = utils.getMessageFlagsByHex(insteonMsg.message_flags);
@@ -100,7 +100,7 @@ var match = exports.match = function match(insteonMsg) {
                     trans_queue[i].state = 'COMPLETE';
                     trans_queue[i].response = insteonMsg;
                     console.log('match::INSTEON transaction ('+trans_queue[i].id+') state updated to COMPLETE');
-                    config.eventEmitter.emit('message', trans_queue[i]); // trigger complete transaction event
+                    config.eventEmitter.emit('message', trans_queue[i]); // trigger complete transaction
                     config.eventEmitter.emit('cleanup');
                     return true;
             }
@@ -114,11 +114,12 @@ var match = exports.match = function match(insteonMsg) {
                 if(last_byte == config.INSTEON_PLM_ACK) {
                     trans_queue[i].state = 'PLM_ACK';
                     console.log('match::INSTEON transaction ('+trans_queue[i].id+') state updated to PLM_ACK');
-                    //config.eventEmitter.emit('cleanup');
+                    //config.eventEmitter.emit('cleanup'); // sorry nobody cares about PLM_ACKs, wait for COMPLETE
                     return true;
                 } else if(last_byte == config.INSTEON_PLM_NAK) {
                     trans_queue[i].state = 'PLM_NAK'; // todo - or expired/failed?
                     console.log('match::INSTEON transaction ('+trans_queue[i].id+') state updated to PLM_NAK');
+                    config.eventEmitter.emit('message', trans_queue[i]); // trigger incomplete transaction
                     config.eventEmitter.emit('cleanup');
                     return true;
                 }
@@ -131,14 +132,14 @@ var match = exports.match = function match(insteonMsg) {
                 trans_queue[i].state = 'COMPLETE'; // if plm command ack, then we are done
                 trans_queue[i].response = insteonMsg;
                 console.log('match::PLM transaction ('+trans_queue[i].id+') state updated to COMPLETE');
-                config.eventEmitter.emit('message', trans_queue[i]);
+                config.eventEmitter.emit('message', trans_queue[i]); // PLM-only message complete
                 config.eventEmitter.emit('cleanup');
                 return true;
             } else if(last_byte == config.INSTEON_PLM_NAK) {
                 trans_queue[i].state = 'PLM_NAK';
                 trans_queue[i].response = insteonMsg;
                 console.log('match::PLM transaction ('+trans_queue[i].id+') state updated to PLM_NAK');
-                config.eventEmitter.emit('message', trans_queue[i]);
+                config.eventEmitter.emit('message', trans_queue[i]); // PLM-only message incomplete
                 config.eventEmitter.emit('cleanup');
                 return true;
             }
