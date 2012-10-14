@@ -8,8 +8,8 @@ var sp = new SerialPort('/dev/ttyS0', {
     baudrate: 19200,
     databits: 8,
     stopbits: 1,
-    parity: 0,
-    flowcontrol: 0,
+    parity: 'none',
+    flowcontrol: false,
     parser: insteon.parser()
 });
 
